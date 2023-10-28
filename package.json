@@ -4,8 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"postinstall": "prisma generate",
-		"vercel-build": "prisma db push && prisma generate",
+		"postinstall": "prisma db push && prisma generate",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "npm run test:integration && npm run test:unit",
