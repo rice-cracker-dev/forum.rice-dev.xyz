@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        @apply scroll-smooth;
+
+        font-family: 'Outfit Variable', sans-serif;
+    }
+
+    .link {
+        @apply text-blue-500 hover:underline;
+    }
+}
+
+.bytemd {
+    @apply bg-gray-800 border-gray-700 text-primary-200 rounded-lg overflow-hidden h-[500px];
+}
+
+.bytemd-toolbar {
+    @apply bg-gray-700 border-gray-700;
+}

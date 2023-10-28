@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Reputation {
+  id           String  @id @unique @default(cuid())
+  score        Int
+  message      String?
+  from_user_id String
+  to_user_id   String
+  from_user    User    @relation("reputations_given", references: [id], fields: [from_user_id], onDelete: Cascade)
+  to_user      User    @relation("reputations", references: [id], fields: [to_user_id], onDelete: Cascade)
+}
+
+model Thread {
+  id           String   @id @unique @default(cuid())
+  title        String
+  publish_date DateTime @default(now())
+  posts        Post[]
+  author_id    String
+  author       User     @relation(references: [id], fields: [author_id], onDelete: Cascade)
+}
+
+model Post {
+  id           String   @id @unique @default(cuid())
+  publish_date DateTime @default(now())
+  updated_date DateTime @updatedAt
+  is_first     Boolean  @default(false)
+  content      String
+  thread_id    String
+  author_id    String
+  thread       Thread   @relation(references: [id], fields: [thread_id])
+  author       User     @relation(references: [id], fields: [author_id])
+}
+
+model User {
+  id                       String       @id @unique
+  username                 String       @unique
+  email                    String       @unique
+  email_verified           Boolean      @default(false)
+  join_date                DateTime     @default(now())
+  threads                  Thread[]
+  posts                    Post[]
+  reputations              Reputation[] @relation("reputations")
+  reputations_given        Reputation[] @relation("reputations_given")
+  bio                      String?
+  signature                String?
+  avatar_url               String?
+  auth_session             Session[]
+  key                      Key[]
+  email_verification_token EmailVerificationToken[]
+}
+
+model Session {
+  id             String @id @unique
+  user_id        String
+  active_expires BigInt
+  idle_expires   BigInt
+  user           User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+}
+
+model Key {
+  id              String  @id @unique
+  hashed_password String?
+  user_id         String
+  user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+}
+
+model EmailVerificationToken {
+  id      String @id @unique
+  expires BigInt
+  user_id String
+  user    User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+}

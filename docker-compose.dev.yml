@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: postgresql-container
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - postgres-data:/data/postgres
+    networks:
+      - postgres-network
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+
+networks:
+  postgres-network:
+    driver: bridge
