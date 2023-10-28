@@ -30,7 +30,7 @@ export const actions: Actions = {
     }
 
     if (redirectUrl) {
-      throw redirect(302, `/${redirectUrl.slice(1)}`)
+      throw redirect(302, `/${redirectUrl.slice(1)}`);
     }
 
     throw redirect(302, '/');
