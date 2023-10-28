@@ -24,7 +24,7 @@ model Thread {
   id           String   @id @unique @default(cuid())
   title        String
   publish_date DateTime @default(now())
-  category     Int
+  category     Int      @default(0)
   posts        Post[]
   author_id    String
   author       User     @relation(references: [id], fields: [author_id], onDelete: Cascade)
