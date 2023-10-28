@@ -11,7 +11,10 @@
     <h1 class="text-xl font-semibold text-primary-900 dark:text-primary-200">New thread</h1>
     <Input bind:value={title} id="title" name="title" placeholder="Title" />
     <Textarea bind:value={content} id="content" name="content" rows={20} placeholder="Content" />
-    <Button type="submit" role="button">Post</Button>
+    <div class="flex flex-row-reverse gap-4">
+      <Button type="submit" role="button" color="blue">Post</Button>
+      <Button type="button" role="button" href="/">Cancel</Button>
+    </div>
   </form>
 
   <div class="flex w-full max-w-7xl flex-col gap-4">

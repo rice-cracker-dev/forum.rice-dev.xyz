@@ -20,12 +20,7 @@
     <Textarea bind:value={content} id="content" name="content" rows={20} placeholder="Content" />
     <div class="flex flex-row-reverse gap-4">
       <Button type="submit" role="button" color="blue" formaction="?/edit">Edit</Button>
-      <Button
-        type="submit"
-        role="button"
-        color="red"
-        formaction={data.post.is_first ? `/threads/delete-thread?id=${data.thread.id}` : '?/delete'}
-      >
+      <Button type="submit" role="button" color="red" formaction="?/delete">
         Delete {data.post.is_first ? 'thread' : 'post'}
       </Button>
       <Button type="button" role="button" href="/threads/view/{data.post.thread_id}">Cancel</Button>

@@ -49,7 +49,7 @@
           </DropdownItem>
           <DropdownItem class="flex items-center gap-4">
             <Icon icon="ph:sketch-logo" />
-            Get Premium!
+            Upgrade
           </DropdownItem>
           <DropdownDivider />
           <form method="POST">

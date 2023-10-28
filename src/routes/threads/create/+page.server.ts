@@ -1,7 +1,8 @@
+import type { Thread } from '@prisma/client';
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import { prisma } from '$lib/server/prisma';
 import { handleLoginRedirect } from '$lib/utils';
+import { prisma } from '$lib/server/prisma';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const session = await locals.auth.validate();
@@ -24,7 +25,15 @@ export const actions: Actions = {
       return fail(403, { message: 'Not authorized' });
     }
 
-    let thread;
+    if (title.length < 10) {
+      return fail(400, { message: 'Title must be at least 10 characters.' });
+    }
+
+    if (content.length < 10) {
+      return fail(400, { message: 'Content must be at least 10 characters.' });
+    }
+
+    let thread: Thread;
 
     try {
       thread = await prisma.$transaction(async (trx) => {

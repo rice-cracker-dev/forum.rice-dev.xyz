@@ -48,10 +48,12 @@ model User {
   email                    String       @unique
   email_verified           Boolean      @default(false)
   join_date                DateTime     @default(now())
+  rank                     Int          @default(0)
   threads                  Thread[]
   posts                    Post[]
   reputations              Reputation[] @relation("reputations")
   reputations_given        Reputation[] @relation("reputations_given")
+  reputations_count        Int          @default(0)
   bio                      String?
   signature                String?
   avatar_url               String?

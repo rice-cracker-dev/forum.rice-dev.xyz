@@ -40,6 +40,14 @@ export const actions: Actions = {
       throw error(403, { message: 'Unauthorized.' });
     }
 
+    if (post.is_first && title.length < 10) {
+      return fail(400, { message: 'Title must be at least 10 characters.' });
+    }
+
+    if (!content || content.length < 10) {
+      return fail(400, { message: 'Content must be at least 10 characters.' });
+    }
+
     try {
       await prisma.$transaction(async (trx) => {
         await trx.post.update({ where: { id: postId }, data: { content } });
@@ -72,10 +80,18 @@ export const actions: Actions = {
     }
 
     try {
-      await prisma.post.delete({ where: { id: postId } });
+      if (post.is_first) {
+        await prisma.thread.delete({ where: { id: threadId } });
+      } else {
+        await prisma.post.delete({ where: { id: postId } });
+      }
     } catch (err) {
       console.error(err);
       return fail(400, { message: 'Unexpected error.' });
+    }
+
+    if (post.is_first) {
+      throw redirect(302, '/');
     }
 
     throw redirect(302, `/threads/view/${threadId}`);

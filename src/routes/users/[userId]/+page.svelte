@@ -28,7 +28,7 @@
       <div class="flex items-center">
         <h1 class="flex-1 text-xl font-semibold text-primary-900 dark:text-primary-200">Bio</h1>
         {#if isOwner}
-          <a href="/profile/settings#bio">
+          <a href="/profile/settings/profile#bio">
             <Icon icon="ph:note-pencil" />
           </a>
         {/if}

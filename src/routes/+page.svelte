@@ -9,10 +9,14 @@
   <div class="flex w-full max-w-7xl flex-col gap-8">
     <div class="flex items-center gap-4">
       <h1 class="flex-1 text-xl font-semibold">Threads</h1>
-      <Button href="/threads/create-thread" color="blue">Create</Button>
+      <Button href="/threads/create" color="blue">Create</Button>
     </div>
 
     <div class="flex flex-col">
+      {#if data.threads.length === 0}
+        <p class="italic text-primary-700 dark:text-primary-400">such emptiness</p>
+      {/if}
+
       {#each data.threads as thread}
         <div class="border-l-2 border-gray-700 pl-4">
           <a href="/threads/view/{thread.id}" class="link">{thread.title}</a>
