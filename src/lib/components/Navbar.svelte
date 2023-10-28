@@ -43,7 +43,7 @@
             <Icon icon="ph:user" />
             Profile
           </DropdownItem>
-          <DropdownItem class="flex items-center gap-4">
+          <DropdownItem href="/profile/settings" class="flex items-center gap-4">
             <Icon icon="ph:gear" />
             Settings
           </DropdownItem>
