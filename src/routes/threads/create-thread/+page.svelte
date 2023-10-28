@@ -6,7 +6,7 @@
   let content = '';
 </script>
 
-<div class="flex w-full flex-col items-center gap-16 px-4 pt-32">
+<div class="flex w-full flex-col items-center gap-16 px-4 py-32">
   <form method="POST" class="flex w-full max-w-7xl flex-col gap-4">
     <h1 class="text-xl font-semibold text-primary-900 dark:text-primary-200">New thread</h1>
     <Input bind:value={title} id="title" name="title" placeholder="Title" />

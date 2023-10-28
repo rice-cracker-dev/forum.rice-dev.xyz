@@ -24,6 +24,7 @@ model Thread {
   id           String   @id @unique @default(cuid())
   title        String
   publish_date DateTime @default(now())
+  category     Int
   posts        Post[]
   author_id    String
   author       User     @relation(references: [id], fields: [author_id], onDelete: Cascade)
@@ -37,8 +38,8 @@ model Post {
   content      String
   thread_id    String
   author_id    String
-  thread       Thread   @relation(references: [id], fields: [thread_id])
-  author       User     @relation(references: [id], fields: [author_id])
+  thread       Thread   @relation(references: [id], fields: [thread_id], onDelete: Cascade)
+  author       User     @relation(references: [id], fields: [author_id], onDelete: Cascade)
 }
 
 model User {

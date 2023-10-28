@@ -16,7 +16,7 @@
 </script>
 
 <Navbar class="p-8">
-  <NavBrand class="flex-1">
+  <NavBrand href="/" class="flex-1">
     <span class="text-xl font-semibold tracking-wide">RiceDev</span>
   </NavBrand>
 
@@ -32,7 +32,7 @@
         <Avatar src={undefined} class="cursor-pointer" />
 
         <Dropdown placement="bottom-end">
-          <div slot="header" class="py-2 px-4 flex items-center gap-4">
+          <div slot="header" class="flex items-center gap-4 px-4 py-2">
             <Avatar src={$page.data.user.avatar_url ?? undefined} size="sm" />
             <div>
               <h1>{$page.data.user.username}</h1>

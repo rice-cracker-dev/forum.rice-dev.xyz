@@ -2,7 +2,7 @@
   import { Button, Card, Input, Label } from 'flowbite-svelte';
 </script>
 
-<div class="flex w-full justify-center pt-32">
+<div class="flex w-full justify-center py-32">
   <Card class="min-w-[24rem]">
     <form method="POST" class="flex flex-col gap-4">
       <div>

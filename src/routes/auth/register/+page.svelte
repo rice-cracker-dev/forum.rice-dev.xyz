@@ -8,11 +8,11 @@
 
   $: isUsernameValid = /^[a-zA-Z0-9]{4,30}$/.test(username);
   $: isEmailValid = strIsEmail(email.toLowerCase());
-  $: isPasswordValid = password.length >= 8
+  $: isPasswordValid = password.length >= 8;
   $: isValid = isUsernameValid && isEmailValid && isPasswordValid;
 </script>
 
-<div class="flex w-full justify-center pt-32">
+<div class="flex w-full justify-center py-32">
   <Card class="min-w-[24rem]">
     <form method="POST" class="flex flex-col gap-4">
       <div>
@@ -21,15 +21,36 @@
       </div>
       <Label class="space-y-2">
         <span>Username</span>
-        <Input id="username" name="username" type="text" bind:value={username} color={isUsernameValid ? 'green' : 'red'} required />
+        <Input
+          id="username"
+          name="username"
+          type="text"
+          bind:value={username}
+          color={isUsernameValid ? 'green' : 'red'}
+          required
+        />
       </Label>
       <Label class="space-y-2">
         <span>Email</span>
-        <Input id="email" name="email" type="text" bind:value={email} color={isEmailValid ? 'green' : 'red'} required />
+        <Input
+          id="email"
+          name="email"
+          type="text"
+          bind:value={email}
+          color={isEmailValid ? 'green' : 'red'}
+          required
+        />
       </Label>
       <Label class="space-y-2">
         <span>Password</span>
-        <Input id="password" name="password" type="password" bind:value={password} color={isPasswordValid ? 'green' : 'red'} required />
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          bind:value={password}
+          color={isPasswordValid ? 'green' : 'red'}
+          required
+        />
       </Label>
       <Button type="submit" color="blue" disabled={!isValid}>Register</Button>
     </form>

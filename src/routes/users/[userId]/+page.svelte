@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Avatar, Button, Card, Input, Label } from 'flowbite-svelte';
+  import { Avatar, Card } from 'flowbite-svelte';
   import { strIsEmpty } from '$lib/helper';
   import Icon from '@iconify/svelte';
   import Markdown from 'svelte-exmarkdown';
@@ -38,8 +38,8 @@
     </div>
   </Card>
 
-  <div class="flex w-full max-w-7xl gap-8">
-    <div class="flex flex-1 flex-col gap-8">
+  <div class="grid w-full max-w-7xl grid-cols-1 gap-8 md:grid-cols-2">
+    <div class="flex flex-col gap-8">
       <h1 class="text-xl font-semibold">Threads</h1>
 
       <div class="flex flex-col items-stretch gap-4">
@@ -58,7 +58,7 @@
       </div>
     </div>
 
-    <div class="flex flex-1 flex-col gap-8">
+    <div class="flex flex-col gap-8">
       <h1 class="text-xl font-semibold">Posts</h1>
 
       <div class="flex flex-col items-stretch gap-4">

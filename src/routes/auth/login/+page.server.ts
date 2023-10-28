@@ -1,5 +1,5 @@
 import type { Actions, PageServerLoad } from './$types';
-import { error, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/lucia';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -26,7 +26,7 @@ export const actions: Actions = {
       locals.auth.setSession(session);
     } catch (err) {
       console.error(err);
-      throw error(400, { message: 'Could not authenticate user.' });
+      return fail(400, { message: 'Could not authenticate user.' });
     }
 
     if (redirectUrl) {
