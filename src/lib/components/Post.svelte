@@ -1,12 +1,12 @@
 <script lang="ts">
   import { Prisma } from '@prisma/client';
-  import { Avatar, Card } from 'flowbite-svelte';
+  import { A, Avatar, Card, Heading, P } from 'flowbite-svelte';
   import { page } from '$app/stores';
   import { strIsEmpty } from '$lib/helper';
   import Markdown from 'svelte-exmarkdown';
 
   const postWithAuthor = Prisma.validator<Prisma.PostDefaultArgs>()({
-    include: { author: { include: { reputations: true } } },
+    include: { author: { include: { _count: { select: { reputations: true } } } } },
   });
 
   type PostWithAuthor = Prisma.PostGetPayload<typeof postWithAuthor>;
@@ -26,12 +26,12 @@
       />
 
       <div class="flex-1 space-y-0">
-        <h1 class="mb-1 text-xl font-semibold text-primary-900 dark:text-primary-200">
+        <Heading tag="h6">
           {post.author.username}
-        </h1>
-        <p>Reputations: {post.author.reputations.length}</p>
-        <p>Join date: {post.author.join_date.toLocaleDateString()}</p>
-        <p>Posted on {post.publish_date.toLocaleString()}</p>
+        </Heading>
+        <P class="opacity-50">Reputations: {post.author._count.reputations}</P>
+        <P class="opacity-50">Join date: {post.author.join_date.toLocaleDateString()}</P>
+        <P class="opacity-50">Posted on {post.publish_date.toLocaleString()}</P>
       </div>
     </div>
 
@@ -41,8 +41,7 @@
 
     {#if $page.data.user && $page.data.user.userId === post.author_id && !hideEdit}
       <div class="mt-4 flex gap-4">
-        <a href="/threads/view/{post.thread_id}/edit/{post.id}" class="link">Edit</a>
-        <a href="/threads/view/{post.thread_id}/edit/{post.id}" class="link">Delete</a>
+        <A href="/threads/view/{post.thread_id}/edit/{post.id}">Edit</A>
       </div>
     {/if}
   </div>

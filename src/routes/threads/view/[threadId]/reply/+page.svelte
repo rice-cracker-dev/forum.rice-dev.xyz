@@ -1,9 +1,12 @@
 <script lang="ts">
-  import type { PageData } from './$types';
+  import type { ActionData, PageData } from './$types';
   import Post from '$lib/components/Post.svelte';
-  import { Button, Textarea } from 'flowbite-svelte';
+  import { Alert, Button, Heading, P, Textarea } from 'flowbite-svelte';
+  import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
+  import { Turnstile } from 'svelte-turnstile';
 
   export let data: PageData;
+  export let form: ActionData;
 
   $: threadPost = data.thread.posts[0];
 </script>
@@ -12,12 +15,12 @@
   <div class="flex w-full max-w-7xl flex-col gap-8">
     <div class="flex items-center gap-4">
       <div class="flex-1 space-y-1">
-        <h1 class="text-3xl font-semibold text-primary-900 dark:text-primary-200">
+        <Heading tag="h6">
           Reply to {data.thread.title}
-        </h1>
-        <p class="flex gap-2 text-primary-700 dark:text-primary-400">
+        </Heading>
+        <P class="opacity-50">
           Published on {data.thread.publish_date.toLocaleDateString()}
-        </p>
+        </P>
       </div>
     </div>
 
@@ -26,11 +29,19 @@
     </div>
 
     <form method="POST" class="flex flex-col gap-4">
-      <h1 class="text-xl font-semibold text-primary-900 dark:text-primary-200">Reply content</h1>
+      <Heading tag="h6">Reply content</Heading>
+      {#if form}
+        <Alert color="red" border>{form.message}</Alert>
+      {/if}
       <Textarea id="content" name="content" rows={20} />
+
+      <div class="self-end">
+        <Turnstile siteKey={PUBLIC_TURNSTILE_SITE_KEY} formsField="captchaToken" />
+      </div>
+
       <div class="flex flex-row-reverse gap-4">
-        <Button type="submit" color="blue">Reply</Button>
-        <Button type="button" href="/threads/view/{data.thread.id}">Cancel</Button>
+        <Button type="submit" color="primary">Reply</Button>
+        <Button type="button" href="/threads/view/{data.thread.id}" color="light">Cancel</Button>
       </div>
     </form>
   </div>

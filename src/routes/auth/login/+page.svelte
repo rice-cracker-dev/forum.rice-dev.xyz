@@ -1,23 +1,34 @@
-<script>
-  import { Button, Card, Input, Label } from 'flowbite-svelte';
+<script lang="ts">
+  import type { ActionData } from './$types';
+  import { Alert, Button, Card, Heading, Input, Label, P, Span } from 'flowbite-svelte';
+  import { Turnstile } from 'svelte-turnstile';
+  import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
+
+  export let form: ActionData;
 </script>
 
 <div class="flex w-full justify-center py-32">
   <Card class="min-w-[24rem]">
     <form method="POST" class="flex flex-col gap-4">
+      {#if form}
+        <Alert color="red" border>{form.message}</Alert>
+      {/if}
       <div>
-        <h1 class="font-semibold">Sign in</h1>
-        <p class="opacity-50">Sign in to access our forum!</p>
+        <Heading tag="h6" class="font-semibold">Sign in</Heading>
+        <P opacity={0.5}>Sign in to access our forum!</P>
       </div>
       <Label class="space-y-2">
-        <span>Email</span>
+        <Span>Email</Span>
         <Input id="email" name="email" type="text" required />
       </Label>
       <Label class="space-y-2">
-        <span>Password</span>
+        <Span>Password</Span>
         <Input id="password" name="password" type="password" required />
       </Label>
-      <Button type="submit" color="blue">Sign in</Button>
+      <div class="self-center">
+        <Turnstile siteKey={PUBLIC_TURNSTILE_SITE_KEY} formsField="captchaToken" />
+      </div>
+      <Button type="submit" color="primary">Sign in</Button>
     </form>
   </Card>
 </div>

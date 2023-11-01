@@ -14,7 +14,7 @@
     <ButtonGroup>
       {#each settingsLinks as link}
         <Button
-          color={$page.url.pathname.startsWith(link.url) ? 'blue' : 'primary'}
+          color={$page.url.pathname.startsWith(link.url) ? 'primary' : 'light'}
           class="gap-4"
           href={link.url}
         >

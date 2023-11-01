@@ -8,8 +8,9 @@ export const load: LayoutServerLoad = async ({ params }) => {
   const thread = await prisma.thread.findUnique({
     where: { id: threadId },
     include: {
+      category: true,
       posts: {
-        include: { author: { include: { reputations: true } } },
+        include: { author: { include: { _count: { select: { reputations: true } } } } },
         orderBy: { publish_date: 'asc' },
       },
     },

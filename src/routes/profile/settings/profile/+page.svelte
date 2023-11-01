@@ -19,6 +19,6 @@
     <Textarea id="signature" name="signature" rows={10} value={data.userData.signature ?? ''} />
   </div>
   <div class="flex flex-row-reverse gap-4">
-    <Button type="submit" color="blue">Save</Button>
+    <Button type="submit" color="primary">Save</Button>
   </div>
 </form>

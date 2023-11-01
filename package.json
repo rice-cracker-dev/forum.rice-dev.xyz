@@ -49,7 +49,10 @@
 		"@iconify/svelte": "^3.1.4",
 		"@lucia-auth/adapter-prisma": "^3.0.2",
 		"@prisma/client": "5.5.2",
+		"@upstash/ratelimit": "^0.4.4",
+		"@upstash/redis": "^1.24.2",
 		"lucia": "^2.7.2",
-		"svelte-exmarkdown": "^3.0.1"
+		"svelte-exmarkdown": "^3.0.1",
+		"svelte-turnstile": "^0.5.0"
 	}
 }

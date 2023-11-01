@@ -1,7 +1,8 @@
 import type { PageServerLoad, Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/lucia';
-import { strIsEmail } from '$lib/helper';
+import { strIsEmail, validatePassword, validateUsername } from '$lib/helper';
+import { validateToken } from '$lib/server/captcha';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
@@ -13,14 +14,19 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   default: async ({ request }) => {
-    const { username, password, email } = Object.fromEntries(await request.formData()) as Record<
-      string,
-      string
-    >;
+    const { username, password, email, captchaToken } = Object.fromEntries(
+      await request.formData()
+    ) as Record<string, string>;
 
     // validation
-    if (!/^[a-zA-Z0-9]{4,30}$/.test(username) || !strIsEmail(email) || password.length < 8) {
+    if (!validateUsername(username) || !strIsEmail(email) || !validatePassword(password)) {
       return fail(400, { message: 'Invalid data.' });
+    }
+
+    const captchaValidated = await validateToken(captchaToken);
+
+    if (!captchaValidated.success) {
+      return fail(429, { message: 'Could not verify captcha.' });
     }
 
     try {
@@ -32,16 +38,19 @@ export const actions: Actions = {
         },
         attributes: {
           username,
-          bio: null,
           email: email.toLowerCase(),
           email_verified: false,
+          is_premium: false,
+          is_admin: false,
+          reputations_count: 0,
+          bio: null,
           avatar_url: null,
           signature: null,
         },
       });
     } catch (err) {
       console.error(err);
-      return fail(400, { message: 'Could not register user ' });
+      return fail(400, { message: 'User already exists' });
     }
 
     throw redirect(302, '/auth/login');

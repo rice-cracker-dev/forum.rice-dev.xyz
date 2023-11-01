@@ -1,6 +1,7 @@
 import type { Actions, PageServerLoad } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { prisma } from '$lib/server/prisma';
+import { validateToken } from '$lib/server/captcha';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
   const { postId } = params;
@@ -23,10 +24,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 export const actions: Actions = {
   edit: async ({ locals, params, request }) => {
     const { postId, threadId } = params;
-    const { title, content } = Object.fromEntries(await request.formData()) as Record<
-      string,
-      string
-    >;
+    const formData = await request.formData();
+    const title = formData.get('title') as string;
+    const content = formData.get('content') as string;
+    const captchaToken = formData.get('captchaToken') as string;
+
     const [session, post] = await Promise.all([
       locals.auth.validate(),
       prisma.post.findUnique({ where: { id: postId } }),
@@ -46,6 +48,12 @@ export const actions: Actions = {
 
     if (!content || content.length < 10) {
       return fail(400, { message: 'Content must be at least 10 characters.' });
+    }
+
+    const captchaValidated = await validateToken(captchaToken);
+
+    if (!captchaValidated.success) {
+      return fail(429, { message: 'Could not verify captcha.' });
     }
 
     try {

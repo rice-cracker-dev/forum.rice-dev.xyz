@@ -7,7 +7,7 @@ export const load: LayoutServerLoad = async ({ params }) => {
 
   const userInfo = await prisma.user.findUnique({
     where: { id: userId },
-    include: { reputations: true, threads: true, posts: { include: { thread: true } } },
+    include: { reputations: true, threads: { take: 5 }, posts: { take: 5 } },
   });
 
   if (!userInfo) {

@@ -10,6 +10,9 @@
     DropdownItem,
     Avatar,
     DropdownDivider,
+    Heading,
+    P,
+    Span,
   } from 'flowbite-svelte';
   import { page } from '$app/stores';
   import Icon from '@iconify/svelte';
@@ -17,14 +20,14 @@
 
 <Navbar class="p-8">
   <NavBrand href="/" class="flex-1">
-    <span class="text-xl font-semibold tracking-wide">RiceDev</span>
+    <Heading tag="h5">RiceDev</Heading>
   </NavBrand>
 
   <div class="flex gap-4 md:order-2">
     <NavHamburger />
     {#if !$page.data.user}
-      <Button href="/auth/login">Sign in</Button>
-      <Button color="blue" href="/auth/register">Sign up</Button>
+      <Button href="/auth/login" color="light">Sign in</Button>
+      <Button href="/auth/register">Sign up</Button>
     {/if}
 
     {#if $page.data.user}
@@ -35,8 +38,17 @@
           <div slot="header" class="flex items-center gap-4 px-4 py-2">
             <Avatar src={$page.data.user.avatar_url ?? undefined} size="sm" />
             <div>
-              <h1>{$page.data.user.username}</h1>
-              <p class="text-primary-700 dark:text-primary-400">{$page.data.user.email}</p>
+              <P opacity={0.9}>
+                {$page.data.user.username}
+                <Span class="font-normal opacity-50">
+                  ({$page.data.user.is_admin
+                    ? 'Admin'
+                    : $page.data.user.is_premium
+                    ? 'Premium'
+                    : 'Member'})
+                </Span>
+              </P>
+              <P class="text-primary-700 dark:text-primary-400">{$page.data.user.email}</P>
             </div>
           </div>
           <DropdownItem href="/profile" class="flex items-center gap-4">

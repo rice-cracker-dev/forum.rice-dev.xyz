@@ -1,31 +1,75 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Button } from 'flowbite-svelte';
+  import {
+    Button,
+    Heading,
+    P,
+    A,
+    Table,
+    TableBody,
+    TableBodyCell,
+    TableBodyRow,
+    TableHead,
+    TableHeadCell,
+  } from 'flowbite-svelte';
 
   export let data: PageData;
 </script>
 
-<div class="flex w-full flex-col items-center gap-16 px-4 pt-32">
+<div class="flex w-full flex-col items-center gap-16 px-4 py-32">
   <div class="flex w-full max-w-7xl flex-col gap-8">
     <div class="flex items-center gap-4">
-      <h1 class="flex-1 text-xl font-semibold">Threads</h1>
-      <Button href="/threads/create" color="blue">Create</Button>
+      <Heading tag="h6" class="flex-1">Categories</Heading>
+      {#if data.user?.is_admin}
+        <Button href="/admin/categories/create" color="light">Create category</Button>
+        <Button href="/admin/categories-group/create" color="light">Create group</Button>
+      {/if}
     </div>
 
-    <div class="flex flex-col">
-      {#if data.threads.length === 0}
-        <p class="italic text-primary-700 dark:text-primary-400">such emptiness</p>
-      {/if}
-
-      {#each data.threads as thread}
-        <div class="border-l-2 border-gray-700 pl-4">
-          <a href="/threads/view/{thread.id}" class="link">{thread.title}</a>
-          <p class="text-primary-700 dark:text-primary-400">
-            <span>By {thread.author.username}</span>
-            <span>&#x2022;</span>
-            <span>Posted on {thread.publish_date.toLocaleString()}</span>
-          </p>
-        </div>
+    <div class="flex flex-col gap-8">
+      {#each data.categoryGroups as categoryGroup}
+        <Table>
+          <TableHead defaultRow={false}>
+            <tr>
+              <TableHeadCell colspan="4" class="normal-case">
+                <Heading tag="h6">{categoryGroup.name}</Heading>
+                <P size="sm" opacity={0.5}>{categoryGroup.description}</P>
+              </TableHeadCell>
+            </tr>
+            <tr>
+              <TableHeadCell>Categories</TableHeadCell>
+              <TableHeadCell>Threads</TableHeadCell>
+              <TableHeadCell>Last thread</TableHeadCell>
+            </tr>
+          </TableHead>
+          <TableBody>
+            {#each categoryGroup.categories as category}
+              <TableBodyRow>
+                <TableBodyCell class="w-2/3">
+                  <A href="/categories/{category.id}">
+                    {category.name}
+                  </A>
+                  <P size="sm" class="opacity-50">{category.description}</P>
+                </TableBodyCell>
+                <TableBodyCell>{category._count.threads}</TableBodyCell>
+                <TableBodyCell>
+                  {#if category.last_thread}
+                    <a href="/threads/view/{category.last_thread.id}" class="line-clamp-1">
+                      {category.last_thread.title}
+                    </a>
+                    <P size="sm" class="line-clamp-1 text-gray-900 dark:text-white/50">
+                      By <A href="/users/{category.last_thread.author_id}">
+                        {category.last_thread.author.username}
+                      </A>
+                    </P>
+                  {:else}
+                    <P>N/A</P>
+                  {/if}
+                </TableBodyCell>
+              </TableBodyRow>
+            {/each}
+          </TableBody>
+        </Table>
       {/each}
     </div>
   </div>

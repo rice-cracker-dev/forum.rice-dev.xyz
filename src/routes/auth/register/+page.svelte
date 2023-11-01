@@ -1,6 +1,11 @@
-<script>
-  import { Button, Card, Input, Label } from 'flowbite-svelte';
+<script lang="ts">
+  import type { ActionData } from './$types';
+  import { Alert, Button, Card, Heading, Input, Label, P, Span } from 'flowbite-svelte';
   import { strIsEmail } from '$lib/helper';
+  import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
+  import { Turnstile } from 'svelte-turnstile';
+
+  export let form: ActionData;
 
   let username = '';
   let email = '';
@@ -15,12 +20,15 @@
 <div class="flex w-full justify-center py-32">
   <Card class="min-w-[24rem]">
     <form method="POST" class="flex flex-col gap-4">
+      {#if form}
+        <Alert color="red" border>{form.message}</Alert>
+      {/if}
       <div>
-        <h1 class="font-semibold">Sign up</h1>
-        <p class="opacity-50">Sign up to access our forum!</p>
+        <Heading tag="h6">Sign up</Heading>
+        <P opacity={0.5}>Sign up to access our forum!</P>
       </div>
       <Label class="space-y-2">
-        <span>Username</span>
+        <Span>Username</Span>
         <Input
           id="username"
           name="username"
@@ -31,7 +39,7 @@
         />
       </Label>
       <Label class="space-y-2">
-        <span>Email</span>
+        <Span>Email</Span>
         <Input
           id="email"
           name="email"
@@ -42,7 +50,7 @@
         />
       </Label>
       <Label class="space-y-2">
-        <span>Password</span>
+        <Span>Password</Span>
         <Input
           id="password"
           name="password"
@@ -52,7 +60,10 @@
           required
         />
       </Label>
-      <Button type="submit" color="blue" disabled={!isValid}>Register</Button>
+      <div class="self-center">
+        <Turnstile siteKey={PUBLIC_TURNSTILE_SITE_KEY} formsField="captchaToken" />
+      </div>
+      <Button type="submit" color="primary" disabled={!isValid}>Register</Button>
     </form>
   </Card>
 </div>

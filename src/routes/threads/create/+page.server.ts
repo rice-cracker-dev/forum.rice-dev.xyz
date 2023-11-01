@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { handleLoginRedirect } from '$lib/utils';
 import { prisma } from '$lib/server/prisma';
+import { validateCategoryPermission } from '$lib/helper';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const session = await locals.auth.validate();
@@ -10,14 +11,18 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   if (!session) {
     throw redirect(302, handleLoginRedirect(url));
   }
+
+  const categories = await prisma.category.findMany();
+
+  return { categories };
 };
 
 export const actions: Actions = {
   default: async ({ locals, request }) => {
-    const { title, content } = Object.fromEntries(await request.formData()) as Record<
-      string,
-      string
-    >;
+    const formData = await request.formData();
+    const title = formData.get('title') as string;
+    const content = formData.get('content') as string;
+    const categoryId = formData.get('category') as string;
 
     const session = await locals.auth.validate();
 
@@ -33,15 +38,43 @@ export const actions: Actions = {
       return fail(400, { message: 'Content must be at least 10 characters.' });
     }
 
+    if (!categoryId) {
+      return fail(400, { message: 'A category must be selected.' });
+    }
+
     let thread: Thread;
 
     try {
+      const category = await prisma.category.findUnique({ where: { id: categoryId } });
+
+      if (!category) {
+        return fail(400, { message: 'Failed to fetch category.' });
+      }
+
+      if (
+        !validateCategoryPermission(session.user, category.is_admin_only, category.is_admin_only)
+      ) {
+        return fail(403, { message: 'Unauthorized.' });
+      }
+
       thread = await prisma.$transaction(async (trx) => {
         const thread = await trx.thread.create({
-          data: { title, author_id: session.user.userId, category: 0 },
+          data: {
+            title,
+            author_id: session.user.userId,
+            category_id: categoryId,
+            posts: {
+              create: {
+                content,
+                author_id: session.user.userId,
+                is_first: true,
+              },
+            },
+          },
         });
-        await trx.post.create({
-          data: { content, author_id: session.user.userId, thread_id: thread.id, is_first: true },
+        await trx.category.update({
+          where: { id: categoryId },
+          data: { last_thread: { connect: { id: thread.id } } },
         });
 
         return thread;

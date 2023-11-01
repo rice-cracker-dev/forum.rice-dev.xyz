@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Avatar, Card } from 'flowbite-svelte';
+  import { A, Avatar, Card, Heading, P } from 'flowbite-svelte';
   import { strIsEmpty } from '$lib/helper';
   import Icon from '@iconify/svelte';
   import Markdown from 'svelte-exmarkdown';
@@ -16,9 +16,9 @@
       <Avatar src={data.userInfo.avatar_url ?? undefined} alt="avatar" size="lg" />
 
       <div class="flex-1 space-y-0">
-        <h1 class="mb-1 text-xl font-semibold text-primary-900 dark:text-primary-200">
+        <Heading class="mb-1 text-xl font-semibold text-primary-900 dark:text-primary-200">
           {data.userInfo.username}
-        </h1>
+        </Heading>
         <p>Reputations: {data.userInfo.reputations.length}</p>
         <p>Join date: {data.userInfo.join_date.toLocaleDateString()}</p>
       </div>
@@ -42,17 +42,17 @@
     <div class="flex flex-col gap-8">
       <h1 class="text-xl font-semibold">Threads</h1>
 
-      <div class="flex flex-col items-stretch gap-4">
+      <div class="flex flex-col items-stretch">
         {#if data.userInfo.posts.length === 0}
-          <p class="text-primary-700 dark:text-primary-400">User hasn't posted anything</p>
+          <P class="opacity-50">User hasn't posted anything</P>
         {/if}
 
         {#each data.userInfo.threads as thread}
-          <div class="border-l-2 border-gray-700 pl-4">
-            <p class="text-primary-700 dark:text-primary-400">
+          <div class="border-l-2 border-gray-700 py-2 pl-4">
+            <P opacity={0.5}>
               Posted on {thread.publish_date.toLocaleString()}
-            </p>
-            <a href="/threads/view/{thread.id}" class="link">{thread.title}</a>
+            </P>
+            <A href="/threads/view/{thread.id}" class="line-clamp-2">{thread.title}</A>
           </div>
         {/each}
       </div>
@@ -61,18 +61,18 @@
     <div class="flex flex-col gap-8">
       <h1 class="text-xl font-semibold">Posts</h1>
 
-      <div class="flex flex-col items-stretch gap-4">
+      <div class="flex flex-col items-stretch">
         {#if data.userInfo.posts.length === 0}
-          <p class="text-primary-700 dark:text-primary-400">User hasn't posted anything</p>
+          <P class="opacity-50">User hasn't posted anything</P>
         {/if}
         {#each data.userInfo.posts as post}
-          <div class="border-l-2 border-gray-700 pl-4">
-            <p class="text-primary-700 dark:text-primary-400">
+          <div class="border-l-2 border-gray-700 py-2 pl-4">
+            <P opacity={0.5}>
               Posted on {post.publish_date.toLocaleString()}
-            </p>
-            <a href="/threads/view/{post.thread.id}" class="link line-clamp-3">
+            </P>
+            <A href="/threads/view/{post.thread_id}" class="line-clamp-3">
               <Markdown md={post.content} />
-            </a>
+            </A>
           </div>
         {/each}
       </div>
