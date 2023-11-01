@@ -17,7 +17,6 @@ export const auth = lucia({
       join_date: userData.join_date,
       is_premium: userData.is_premium,
       is_admin: userData.is_admin,
-      reputations_count: userData.reputations_count,
       bio: userData.bio,
       signature: userData.signature,
       avatar_url: userData.avatar_url,

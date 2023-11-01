@@ -42,7 +42,6 @@ export const actions: Actions = {
           email_verified: false,
           is_premium: false,
           is_admin: false,
-          reputations_count: 0,
           bio: null,
           avatar_url: null,
           signature: null,
@@ -50,7 +49,7 @@ export const actions: Actions = {
       });
     } catch (err) {
       console.error(err);
-      return fail(400, { message: 'User already exists' });
+      return fail(400, { message: 'Failed to create account.' });
     }
 
     throw redirect(302, '/auth/login');

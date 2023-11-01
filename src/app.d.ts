@@ -23,7 +23,6 @@ declare global {
       join_date?: Date;
       is_premium: boolean;
       is_admin: boolean;
-      reputations_count: number;
       bio?: string | null;
       signature?: string | null;
       avatar_url?: string | null;
