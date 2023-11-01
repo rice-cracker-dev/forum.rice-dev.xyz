@@ -11,6 +11,8 @@ const getCategoryGroups = async () =>
           last_thread: { include: { author: true } },
           _count: { select: { threads: true } },
         },
+
+        orderBy: { order: 'asc' },
       },
     },
 
