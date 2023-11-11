@@ -25,8 +25,8 @@
       {/if}
     </div>
 
-    <Table>
-      {#each data.categoryGroups as categoryGroup}
+    {#each data.categoryGroups as categoryGroup}
+      <Table>
         <caption
           class="mb-4 text-left text-lg font-semibold tracking-wide text-gray-900 dark:text-white"
         >
@@ -40,13 +40,15 @@
           <TableHeadCell>Last thread</TableHeadCell>
         </TableHead>
 
-        <TableBody>
+        <TableBody class="divide-y">
           {#each categoryGroup.categories as category}
             <TableBodyRow>
               <TableBodyCell>
                 <div>
                   <A href="/categories/{category.id}">{category.name}</A>
-                  <p class="font-normal text-gray-700 dark:text-white/50">{category.description}</p>
+                  <p class="line-clamp-1 font-normal text-gray-700 dark:text-white/50">
+                    {category.description}
+                  </p>
                 </div>
               </TableBodyCell>
               <TableBodyCell>
@@ -68,7 +70,7 @@
             </TableBodyRow>
           {/each}
         </TableBody>
-      {/each}
-    </Table>
+      </Table>
+    {/each}
   </div>
 </div>
