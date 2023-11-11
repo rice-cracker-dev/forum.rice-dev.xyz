@@ -47,7 +47,7 @@
   </div>
 
   {#if post.author?.signature}
-    <div class="border-t border-gray-300 p-4 dark:border-gray-700">
+    <div class="max-h-64 overflow-y-auto border-t border-gray-300 p-4 dark:border-gray-700">
       <RichTextViewer content={jsonToContent(post.author.signature)} />
     </div>
   {/if}
