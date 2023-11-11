@@ -13,6 +13,7 @@
     Heading,
     P,
     Span,
+    DarkMode,
   } from 'flowbite-svelte';
   import { page } from '$app/stores';
   import Icon from '@iconify/svelte';
@@ -29,6 +30,8 @@
       <Button href="/auth/login" color="light">Sign in</Button>
       <Button href="/auth/register">Sign up</Button>
     {/if}
+
+    <DarkMode />
 
     {#if $page.data.user}
       <div>

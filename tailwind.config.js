@@ -24,6 +24,24 @@ export default {
           900: '#1e3a8a',
         },
       },
+
+      typography: {
+        DEFAULT: {
+          css: {
+            code: {
+              '&::before': { content: 'none !important' },
+              '&::after': { content: 'none !important' },
+              '&': { fontWeight: 'normal' },
+            },
+
+            p: {
+              '&::before': { content: 'none !important' },
+              '&::after': { content: 'none !important' },
+              '&': { fontWeight: 'normal' },
+            },
+          },
+        },
+      },
     },
   },
 };

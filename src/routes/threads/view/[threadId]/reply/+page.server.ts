@@ -4,6 +4,8 @@ import { handleLoginRedirect } from '$lib/utils';
 import { prisma } from '$lib/server/prisma';
 import { validateCategoryPermission } from '$lib/helper';
 import { validateToken } from '$lib/server/captcha';
+import { generateText, type JSONContent } from '@tiptap/core';
+import { RichTextEditorExtensions } from '$lib/components/RichTextEditor';
 
 export const load: PageServerLoad = async ({ locals, url, parent }) => {
   const session = await locals.auth.validate();
@@ -28,7 +30,7 @@ export const actions: Actions = {
     const content = formData.get('content') as string;
     const captchaToken = formData.get('captchaToken') as string;
 
-    if (!content || content.length < 10) {
+    if (generateText(JSON.parse(content) as JSONContent, RichTextEditorExtensions).length < 10) {
       return fail(400, { message: 'Must be at least 10 characters.' });
     }
 
@@ -61,12 +63,20 @@ export const actions: Actions = {
         return fail(429, { message: 'Could not verify captcha.' });
       }
 
-      await prisma.thread.update({
-        where: { id: threadId },
-        data: {
-          posts: { create: { content, author_id: session.user.userId } },
-          updated_date: new Date(Date.now()),
-        },
+      await prisma.$transaction(async (trx) => {
+        const thread = await trx.thread.update({
+          where: { id: threadId },
+          data: {
+            posts: { create: { content: JSON.parse(content), author_id: session.user.userId } },
+            updated_date: new Date(Date.now()),
+          },
+        });
+
+        // bump thread
+        await trx.category.update({
+          where: { id: thread.category_id },
+          data: { last_thread_id: thread.id },
+        });
       });
     } catch (err) {
       console.error(err);

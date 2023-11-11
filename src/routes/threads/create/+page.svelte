@@ -1,15 +1,17 @@
 <script lang="ts">
   import type { PageData, ActionData } from './$types';
+  import type { JSONContent } from '@tiptap/core';
+  import { Alert, Button, Heading, Input, Select } from 'flowbite-svelte';
   import { page } from '$app/stores';
-  import { Alert, Button, Heading, Input, Select, Textarea } from 'flowbite-svelte';
-  import Markdown from 'svelte-exmarkdown';
+  import { enhance } from '$app/forms';
   import { validateCategoryPermission } from '$lib/helper';
+  import RichTextEditor from '$lib/components/RichTextEditor.svelte';
 
   export let data: PageData;
   export let form: ActionData;
 
   let title = '';
-  let content = '';
+  let content: JSONContent | null = null;
 
   $: items = data.categories
     .filter((o) => validateCategoryPermission(data.user, o.is_admin_only, o.is_premium_only))
@@ -18,7 +20,13 @@
 </script>
 
 <div class="flex w-full flex-col items-center gap-16 px-4 py-32">
-  <form method="POST" class="flex w-full max-w-7xl flex-col gap-4">
+  <form
+    method="POST"
+    class="flex w-full max-w-7xl flex-col gap-4"
+    use:enhance={({ formData }) => {
+      formData.set('content', JSON.stringify(content));
+    }}
+  >
     <Heading tag="h4">New thread</Heading>
     {#if form}
       <Alert color="red" border>{form.message}</Alert>
@@ -32,13 +40,9 @@
       required
     />
     <Input bind:value={title} id="title" name="title" placeholder="Title" required />
-    <Textarea
-      bind:value={content}
-      id="content"
-      name="content"
-      rows={20}
-      placeholder="Content"
-      required
+    <RichTextEditor
+      initialContent={content}
+      on:update={(e) => (content = e.detail.editor.getJSON())}
     />
     <div class="flex flex-row-reverse gap-4">
       <Button type="submit" role="button" color="primary">Post</Button>
@@ -52,11 +56,4 @@
       </Button>
     </div>
   </form>
-
-  <div class="flex w-full max-w-7xl flex-col gap-4">
-    <Heading tag="h4">Preview</Heading>
-    <div class="prose dark:prose-invert">
-      <Markdown md={content} />
-    </div>
-  </div>
 </div>

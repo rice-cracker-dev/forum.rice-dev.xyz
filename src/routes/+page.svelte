@@ -3,7 +3,6 @@
   import {
     Button,
     Heading,
-    P,
     A,
     Table,
     TableBody,
@@ -26,51 +25,50 @@
       {/if}
     </div>
 
-    <div class="flex flex-col gap-8">
+    <Table>
       {#each data.categoryGroups as categoryGroup}
-        <Table>
-          <TableHead defaultRow={false}>
-            <tr>
-              <TableHeadCell colspan="4" class="normal-case">
-                <Heading tag="h6">{categoryGroup.name}</Heading>
-                <P size="sm" opacity={0.5}>{categoryGroup.description}</P>
-              </TableHeadCell>
-            </tr>
-            <tr>
-              <TableHeadCell>Categories</TableHeadCell>
-              <TableHeadCell>Threads</TableHeadCell>
-              <TableHeadCell>Last thread</TableHeadCell>
-            </tr>
-          </TableHead>
-          <TableBody>
-            {#each categoryGroup.categories as category}
-              <TableBodyRow>
-                <TableBodyCell class="w-2/3">
-                  <A href="/categories/{category.id}">
-                    {category.name}
-                  </A>
-                  <P size="sm" class="opacity-50">{category.description}</P>
-                </TableBodyCell>
-                <TableBodyCell>{category._count.threads}</TableBodyCell>
-                <TableBodyCell>
+        <caption
+          class="mb-4 text-left text-lg font-semibold tracking-wide text-gray-900 dark:text-white"
+        >
+          {categoryGroup.name}
+          <p class="text-sm font-normal text-gray-700 dark:text-white/50">
+            {categoryGroup.description}
+          </p>
+        </caption>
+        <TableHead>
+          <TableHeadCell class="w-1/2">Category</TableHeadCell>
+          <TableHeadCell>Last thread</TableHeadCell>
+        </TableHead>
+
+        <TableBody>
+          {#each categoryGroup.categories as category}
+            <TableBodyRow>
+              <TableBodyCell>
+                <div>
+                  <A href="/categories/{category.id}">{category.name}</A>
+                  <p class="font-normal text-gray-700 dark:text-white/50">{category.description}</p>
+                </div>
+              </TableBodyCell>
+              <TableBodyCell>
+                <div>
                   {#if category.last_thread}
-                    <a href="/threads/view/{category.last_thread.id}" class="line-clamp-1">
+                    <A href="/threads/view/{category.last_thread.id}">
                       {category.last_thread.title}
-                    </a>
-                    <P size="sm" class="line-clamp-1 text-gray-900 dark:text-white/50">
+                    </A>
+                    <p class="font-normal text-gray-700 dark:text-white/50">
                       By <A href="/users/{category.last_thread.author_id}">
                         {category.last_thread.author.username}
                       </A>
-                    </P>
+                    </p>
                   {:else}
-                    <P>N/A</P>
+                    <p class="text-gray-900 dark:text-white">N/A</p>
                   {/if}
-                </TableBodyCell>
-              </TableBodyRow>
-            {/each}
-          </TableBody>
-        </Table>
+                </div>
+              </TableBodyCell>
+            </TableBodyRow>
+          {/each}
+        </TableBody>
       {/each}
-    </div>
+    </Table>
   </div>
 </div>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import {
+    A,
     Button,
     ButtonGroup,
     Heading,
@@ -55,16 +56,16 @@
           </TableHeadCell>
         </tr>
         <tr>
-          <TableHeadCell>Threads</TableHeadCell>
-          <TableHeadCell>Replies</TableHeadCell>
-          <TableHeadCell>Views</TableHeadCell>
+          <TableHeadCell class="w-1/2">Threads</TableHeadCell>
+          <TableHeadCell class="text-center">Replies</TableHeadCell>
+          <TableHeadCell class="text-center">Views</TableHeadCell>
           <TableHeadCell>Published date</TableHeadCell>
         </tr>
       </TableHead>
       <TableBody>
         {#if data.category.threads.length === 0}
           <TableBodyRow>
-            <TableBodyCell class="w-full">such emptiness</TableBodyCell>
+            <TableBodyCell>such emptiness</TableBodyCell>
             <TableBodyCell />
             <TableBodyCell />
             <TableBodyCell />
@@ -72,14 +73,14 @@
         {/if}
         {#each data.category.threads as thread}
           <TableBodyRow>
-            <TableBodyCell class="w-full">
-              <a href="/threads/view/{thread.id}">
-                <P>{thread.title}</P>
-              </a>
-              <P size="sm" class="opacity-50">{thread.author.username}</P>
+            <TableBodyCell>
+              <A href="/threads/view/{thread.id}">{thread.title}</A>
+              <p class="font-normal text-gray-700 dark:text-white/50">
+                By <A href="/users/{thread.author_id}">{thread.author.username}</A>
+              </p>
             </TableBodyCell>
-            <TableBodyCell>{thread._count.posts - 1}</TableBodyCell>
-            <TableBodyCell>N/A</TableBodyCell>
+            <TableBodyCell class="text-center">{thread._count.posts - 1}</TableBodyCell>
+            <TableBodyCell class="text-center">{thread.views}</TableBodyCell>
             <TableBodyCell>
               {thread.publish_date.toLocaleTimeString()} - {thread.publish_date.toLocaleDateString()}
             </TableBodyCell>

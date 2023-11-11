@@ -20,5 +20,12 @@ export const load: LayoutServerLoad = async ({ params }) => {
     throw error(404, { message: 'Not found' });
   }
 
+  try {
+    await prisma.thread.update({ where: { id: thread.id }, data: { views: { increment: 1 } } });
+  } catch (err) {
+    console.error(err);
+    throw error(500, { message: 'Something went wrong.' });
+  }
+
   return { thread };
 };

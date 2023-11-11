@@ -2,6 +2,8 @@ import type { Actions, PageServerLoad } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { prisma } from '$lib/server/prisma';
 import { validateToken } from '$lib/server/captcha';
+import { generateText, type JSONContent } from '@tiptap/core';
+import { RichTextEditorExtensions } from '$lib/components/RichTextEditor';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
   const { postId } = params;
@@ -46,7 +48,7 @@ export const actions: Actions = {
       return fail(400, { message: 'Title must be at least 10 characters.' });
     }
 
-    if (!content || content.length < 10) {
+    if (generateText(JSON.parse(content) as JSONContent, RichTextEditorExtensions).length < 10) {
       return fail(400, { message: 'Content must be at least 10 characters.' });
     }
 
@@ -58,7 +60,7 @@ export const actions: Actions = {
 
     try {
       await prisma.$transaction(async (trx) => {
-        await trx.post.update({ where: { id: postId }, data: { content } });
+        await trx.post.update({ where: { id: postId }, data: { content: JSON.parse(content) } });
 
         if (post.is_first) {
           await trx.thread.update({ where: { id: threadId }, data: { title } });

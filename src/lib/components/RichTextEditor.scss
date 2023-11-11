@@ -1,0 +1,7 @@
+.toolbar-btn {
+  @apply bg-transparent p-2 hover:bg-black/10 dark:hover:bg-white/10;
+}
+
+.toolbar-btn.active {
+  @apply bg-primary-500 hover:bg-primary-600;
+}

@@ -2,7 +2,7 @@
   import Navbar from '$lib/components/Navbar.svelte';
 
   import '@fontsource-variable/outfit';
-  import '../app.css';
+  import '../app.scss';
 </script>
 
 <main>

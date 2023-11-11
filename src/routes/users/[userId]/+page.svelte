@@ -1,9 +1,11 @@
 <script lang="ts">
   import type { PageData } from './$types';
+  import { generateText } from '@tiptap/core';
   import { A, Avatar, Card, Heading, P } from 'flowbite-svelte';
-  import { strIsEmpty } from '$lib/helper';
+  import { jsonToContent } from '$lib/helper';
+  import { RichTextEditorExtensions } from '$lib/components/RichTextEditor';
   import Icon from '@iconify/svelte';
-  import Markdown from 'svelte-exmarkdown';
+  import RichTextViewer from '$lib/components/RichTextViewer.svelte';
 
   export let data: PageData;
 
@@ -16,7 +18,7 @@
       <Avatar src={data.userInfo.avatar_url ?? undefined} alt="avatar" size="lg" />
 
       <div class="flex-1 space-y-0">
-        <Heading class="mb-1 text-xl font-semibold text-primary-900 dark:text-primary-200">
+        <Heading class="mb-1 text-xl font-semibold text-gray-900 dark:text-white">
           {data.userInfo.username}
         </Heading>
         <p>Reputations: {data.userInfo.reputations.length}</p>
@@ -26,7 +28,7 @@
 
     <div class="mt-8">
       <div class="flex items-center">
-        <h1 class="flex-1 text-xl font-semibold text-primary-900 dark:text-primary-200">Bio</h1>
+        <h1 class="flex-1 text-xl font-semibold text-gray-900 dark:text-white">Bio</h1>
         {#if isOwner}
           <a href="/profile/settings/profile#bio">
             <Icon icon="ph:note-pencil" />
@@ -34,7 +36,11 @@
         {/if}
       </div>
       <hr class="border-white/10" />
-      <p class="mt-2">{strIsEmpty(data.userInfo.bio) ? 'No bio.' : data.userInfo.bio}</p>
+      {#if data.userInfo.bio}
+        <RichTextViewer content={jsonToContent(data.userInfo.bio)} />
+      {:else}
+        <p>No bio</p>
+      {/if}
     </div>
   </Card>
 
@@ -71,7 +77,7 @@
               Posted on {post.publish_date.toLocaleString()}
             </P>
             <A href="/threads/view/{post.thread_id}" class="line-clamp-3">
-              <Markdown md={post.content} />
+              {generateText(jsonToContent(post.content), RichTextEditorExtensions)}
             </A>
           </div>
         {/each}

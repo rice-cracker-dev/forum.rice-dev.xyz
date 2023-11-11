@@ -1,19 +1,27 @@
 <script lang="ts">
   import type { ActionData, PageData } from './$types';
-  import { Alert, Button, Heading, Input, Textarea } from 'flowbite-svelte';
-  import Markdown from 'svelte-exmarkdown';
-  import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
+  import { Alert, Button, Heading, Input } from 'flowbite-svelte';
   import { Turnstile } from 'svelte-turnstile';
+  import { enhance } from '$app/forms';
+  import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
+  import { jsonToContent } from '$lib/helper';
+  import RichTextEditor from '$lib/components/RichTextEditor.svelte';
 
   export let data: PageData;
   export let form: ActionData;
 
   let title = data.thread.title;
-  let content = data.post.content;
+  let content = jsonToContent(data.post.content);
 </script>
 
 <div class="flex w-full flex-col items-center gap-16 px-4 py-32">
-  <form method="POST" class="flex w-full max-w-7xl flex-col gap-4">
+  <form
+    method="POST"
+    class="flex w-full max-w-7xl flex-col gap-4"
+    use:enhance={({ formData }) => {
+      formData.set('content', JSON.stringify(content));
+    }}
+  >
     <Heading tag="h6">
       Edit {data.post.is_first ? 'thread' : 'post'}
     </Heading>
@@ -23,7 +31,10 @@
     {#if data.post.is_first}
       <Input bind:value={title} id="title" name="title" placeholder="Title" />
     {/if}
-    <Textarea bind:value={content} id="content" name="content" rows={20} placeholder="Content" />
+    <RichTextEditor
+      initialContent={content}
+      on:update={(e) => (content = e.detail.editor.getJSON())}
+    />
     <div class="self-end">
       <Turnstile siteKey={PUBLIC_TURNSTILE_SITE_KEY} formsField="captchaToken" />
     </div>
@@ -37,11 +48,4 @@
       </Button>
     </div>
   </form>
-
-  <div class="flex w-full max-w-7xl flex-col gap-4">
-    <Heading tag="h6">Preview</Heading>
-    <div class="prose dark:prose-invert">
-      <Markdown md={content} />
-    </div>
-  </div>
 </div>

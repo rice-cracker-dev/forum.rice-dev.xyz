@@ -2,8 +2,8 @@
   import { Prisma } from '@prisma/client';
   import { A, Avatar, Card, Heading, P } from 'flowbite-svelte';
   import { page } from '$app/stores';
-  import { strIsEmpty } from '$lib/helper';
-  import Markdown from 'svelte-exmarkdown';
+  import { jsonToContent } from '$lib/helper';
+  import RichTextViewer from '$lib/components/RichTextViewer.svelte';
 
   const postWithAuthor = Prisma.validator<Prisma.PostDefaultArgs>()({
     include: { author: { include: { _count: { select: { reputations: true } } } } },
@@ -19,25 +19,25 @@
   <div class="flex flex-col items-stretch p-4">
     <div class="flex items-center gap-8">
       <Avatar
-        href="/users/{post.author.id}"
-        src={post.author.avatar_url ?? undefined}
+        href={post.author && `/users/${post.author.id}`}
+        src={post.author?.avatar_url ?? undefined}
         alt="avatar"
         size="lg"
       />
 
       <div class="flex-1 space-y-0">
         <Heading tag="h6">
-          {post.author.username}
+          {post.author ? post.author.username : '[Deleted User]'}
         </Heading>
-        <P class="opacity-50">Reputations: {post.author._count.reputations}</P>
-        <P class="opacity-50">Join date: {post.author.join_date.toLocaleDateString()}</P>
-        <P class="opacity-50">Posted on {post.publish_date.toLocaleString()}</P>
+        {#if post.author}
+          <P class="opacity-50">Reputations: {post.author._count.reputations}</P>
+          <P class="opacity-50">Join date: {post.author.join_date.toLocaleDateString()}</P>
+          <P class="opacity-50">Posted on {post.publish_date.toLocaleString()}</P>
+        {/if}
       </div>
     </div>
 
-    <div class="prose mt-8 !max-w-none dark:prose-invert">
-      <Markdown md={post.content} />
-    </div>
+    <RichTextViewer class="mt-8" content={jsonToContent(post.content)} />
 
     {#if $page.data.user && $page.data.user.userId === post.author_id && !hideEdit}
       <div class="mt-4 flex gap-4">
@@ -46,9 +46,9 @@
     {/if}
   </div>
 
-  {#if !strIsEmpty(post.author.signature)}
-    <div class="prose !max-w-none border-t bg-white p-4 dark:prose-invert dark:bg-gray-900">
-      <Markdown md={post.author.signature ?? ''} />
+  {#if post.author?.signature}
+    <div class="border-t border-gray-300 p-4 dark:border-gray-700">
+      <RichTextViewer content={jsonToContent(post.author.signature)} />
     </div>
   {/if}
 </Card>

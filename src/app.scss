@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        @apply scroll-smooth;
+
+        font-family: 'Outfit Variable', sans-serif;
+    }
+
+    code {
+        @apply p-2 bg-gray-300 dark:bg-gray-700 rounded;
+    }
+
+    pre > code {
+        padding: 0 !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+    }
+
+    .link {
+        @apply text-blue-500 hover:underline;
+    }
+}
+
+@layer utilities {
+    .prose {
+        * {
+            @apply my-1;
+        }
+    }
+}

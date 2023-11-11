@@ -4,6 +4,8 @@ import { fail, redirect } from '@sveltejs/kit';
 import { handleLoginRedirect } from '$lib/utils';
 import { prisma } from '$lib/server/prisma';
 import { validateCategoryPermission } from '$lib/helper';
+import { generateText, type JSONContent } from '@tiptap/core';
+import { RichTextEditorExtensions } from '$lib/components/RichTextEditor';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const session = await locals.auth.validate();
@@ -34,7 +36,7 @@ export const actions: Actions = {
       return fail(400, { message: 'Title must be at least 10 characters.' });
     }
 
-    if (content.length < 10) {
+    if (generateText(JSON.parse(content) as JSONContent, RichTextEditorExtensions).length < 10) {
       return fail(400, { message: 'Content must be at least 10 characters.' });
     }
 
@@ -65,7 +67,7 @@ export const actions: Actions = {
             category_id: categoryId,
             posts: {
               create: {
-                content,
+                content: JSON.parse(content),
                 author_id: session.user.userId,
                 is_first: true,
               },

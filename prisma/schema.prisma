@@ -31,7 +31,7 @@ model Category {
   category_group_id String?
   last_thread_id    String?        @unique
   category_group    CategoryGroup? @relation(references: [id], fields: [category_group_id])
-  last_thread       Thread?        @relation("last_thread", references: [id], fields: [last_thread_id], onDelete: Cascade)
+  last_thread       Thread?        @relation("last_thread", references: [id], fields: [last_thread_id])
 }
 
 model CategoryGroup {
@@ -48,9 +48,10 @@ model Thread {
   publish_date     DateTime  @default(now())
   updated_date     DateTime  @updatedAt
   posts            Post[]
-  author_id        String
+  author_id        String?
   category_id      String
-  author           User      @relation(references: [id], fields: [author_id], onDelete: Cascade)
+  views            Int       @default(0)
+  author           User?     @relation(references: [id], fields: [author_id], onDelete: Cascade)
   category         Category  @relation("threads", references: [id], fields: [category_id], onDelete: Cascade)
   last_category    Category? @relation("last_thread")
 }
@@ -60,13 +61,13 @@ model Post {
   publish_date DateTime @default(now())
   updated_date DateTime @updatedAt
   is_first     Boolean  @default(false)
-  content      String
+  content      Json
   likedBy      User[]   @relation("liked_posts")
   dislikedBy   User[]   @relation("disliked_posts")
   thread_id    String
-  author_id    String
+  author_id    String?
   thread       Thread   @relation(references: [id], fields: [thread_id], onDelete: Cascade, onUpdate: Cascade)
-  author       User     @relation(references: [id], fields: [author_id], onDelete: Cascade)
+  author       User?    @relation(references: [id], fields: [author_id])
 }
 
 model User {
@@ -83,8 +84,8 @@ model User {
   disliked_posts           Post[]                   @relation("disliked_posts")
   reputations              Reputation[]             @relation("reputations")
   reputations_given        Reputation[]             @relation("reputations_given")
-  bio                      String?
-  signature                String?
+  bio                      Json?
+  signature                Json?
   avatar_url               String?
   auth_session             Session[]
   key                      Key[]

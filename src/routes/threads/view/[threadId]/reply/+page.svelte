@@ -1,12 +1,17 @@
 <script lang="ts">
   import type { ActionData, PageData } from './$types';
-  import Post from '$lib/components/Post.svelte';
-  import { Alert, Button, Heading, P, Textarea } from 'flowbite-svelte';
+  import type { JSONContent } from '@tiptap/core';
+  import { Alert, Button, Heading, P } from 'flowbite-svelte';
+  import { enhance } from '$app/forms';
   import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
   import { Turnstile } from 'svelte-turnstile';
+  import RichTextEditor from '$lib/components/RichTextEditor.svelte';
+  import Post from '$lib/components/Post.svelte';
 
   export let data: PageData;
   export let form: ActionData;
+
+  let content: JSONContent = [];
 
   $: threadPost = data.thread.posts[0];
 </script>
@@ -28,12 +33,21 @@
       <Post post={threadPost} hideEdit />
     </div>
 
-    <form method="POST" class="flex flex-col gap-4">
+    <form
+      method="POST"
+      class="flex flex-col gap-4"
+      use:enhance={({ formData }) => {
+        formData.set('content', JSON.stringify(content));
+      }}
+    >
       <Heading tag="h6">Reply content</Heading>
       {#if form}
         <Alert color="red" border>{form.message}</Alert>
       {/if}
-      <Textarea id="content" name="content" rows={20} />
+      <RichTextEditor
+        initialContent={content}
+        on:update={(e) => (content = e.detail.editor.getJSON())}
+      />
 
       <div class="self-end">
         <Turnstile siteKey={PUBLIC_TURNSTILE_SITE_KEY} formsField="captchaToken" />
